@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Jar of Promises 🌸 — Moonlit Edition (v4)</title>
+  <meta name="description" content="A dreamy, moonlit jar of promises with shimmering lights, ocean waves, twinkling stars, and gentle music. Click the jar to pull a promise, one by one." />
+  <style>
+    :root{
+      --bg-top:#040a15;
+      --bg-mid:#0a2030;
+      --bg-bottom:#0e2f3b;
+      --accent:#7ae3ff;
+      --accent-2:#ffd7ff;
+      --moon:#f8fbff;
+      --glow:#7cd3ff;
+      --pink:#ff7bd3;
+      --gold:#ffd36e;
+      --leaf:#49ffb3;
+      --slip:#fffaf3;
+      --slip-ink:#2b2b2b;
+      --bulb-blue:#7edbff;
+      --bulb-pink:#ff9de6;
+      --bulb-gold:#ffd36e;
+      --bulb-lime:#b7ff9d;
+      --bulb-purple:#d2a4ff;
+      --bulb-orange:#ffb77a;
+      --bulb-aqua:#7effe1;
+      --bulb-rose:#ff9fbf;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", sans-serif;
+      color:#eaf7ff;
+      overflow:hidden;
+      background: linear-gradient(180deg,var(--bg-top),var(--bg-mid) 50%,var(--bg-bottom) 100%);
+      letter-spacing:0.2px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Twinkling sky */
+    #stars{position:fixed; inset:0; z-index:0}
+
+    /* Moon */
+    .moon{
+      position:fixed;
+      top:5vh; right:6vw;
+      width:110px; height:110px;
+      border-radius:50%;
+      background: radial-gradient(35% 35% at 40% 40%, #ffffff, var(--moon) 50%, #cfe9ff 70%, rgba(255,255,255,0.05) 100%);
+      box-shadow:
+        0 0 20px 6px rgba(255,255,255,0.5),
+        0 0 60px 20px rgba(124, 211, 255, 0.35),
+        0 0 120px 40px rgba(124, 211, 255, 0.15);
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.8));
+      animation: moonFloat 10s ease-in-out infinite;
+      z-index:2;
+    }
+    .moon::after{
+      content:"";
+      position:absolute; inset:-30px;
+      background: conic-gradient(from 0deg, transparent 0 60deg, rgba(255,255,255,0.15) 60deg 120deg, transparent 120deg 360deg);
+      border-radius:50%;
+      filter: blur(20px);
+      animation: moonAura 18s linear infinite;
+    }
+    @keyframes moonFloat{0%,100%{transform: translateY(-6px)}50%{transform: translateY(6px)}}
+    @keyframes moonAura{to{transform:rotate(360deg)}}
+
+    /* Floating bokeh orbs */
+    .bokeh{position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; mix-blend-mode: screen;}
+    .bokeh span{position:absolute; width:120px; height:120px; border-radius:50%; filter: blur(12px); opacity:0.13; animation:float 30s linear infinite;}
+    .b1{background: radial-gradient(var(--accent), transparent 60%); left:10vw; top:20vh; animation-duration:28s}
+    .b2{background: radial-gradient(var(--pink), transparent 60%); left:70vw; top:30vh; animation-duration:35s}
+    .b3{background: radial-gradient(var(--gold), transparent 60%); left:40vw; top:10vh; animation-duration:38s}
+    .b4{background: radial-gradient(var(--leaf), transparent 60%); left:15vw; top:65vh; animation-duration:40s}
+    @keyframes float{0%{transform:translateY(0) translateX(0); opacity:0.12}50%{opacity:0.24}100%{transform:translateY(-50vh) translateX(10vw); opacity:0.12}}
+
+    /* Ocean waves */
+    .ocean{position:fixed; left:0; right:0; bottom:-1px; height:35vh; z-index:2; pointer-events:none}
+    .wave{position:absolute; left:0; right:0; bottom:0; height:40%; opacity:0.45; filter: drop-shadow(0 -6px 32px rgba(124,211,255,0.25));}
+    .wave svg{width:200%; height:120%; transform:translateX(-25%)}
+    .wave path{fill:url(#wgrad)}
+    .w1{animation: drift1 24s linear infinite}
+    .w2{animation: drift2 36s linear infinite; opacity:0.35}
+    .w3{animation: drift3 52s linear infinite; opacity:0.25}
+    @keyframes drift1{to{transform:translateX(-5%)}}
+    @keyframes drift2{to{transform:translateX(-12%)}}
+    @keyframes drift3{to{transform:translateX(-20%)}}
+
+    /* Festoon lights */
+    .festoon{position:fixed; left:0; right:0; top:8vh; height:150px; pointer-events:none; z-index:3; opacity:0; transition:opacity .8s ease}
+    .festival .festoon{opacity:1}
+    .festoon .wire{position:absolute; left:0; right:0; top:40px; height:2px; background: linear-gradient(90deg, transparent, rgba(175,255,217,0.12), transparent); transform: rotate(-3deg);}
+    .festoon ul{list-style:none; padding:0; margin:0; position:absolute; left:5vw; right:5vw; top:0; height:120px; display:flex; justify-content:space-between; flex-wrap:wrap; transform: rotate(-3deg);}
+    .festoon li{width:18px; height:26px; border-radius: 8px 8px 14px 14px; background:#14222b; position:relative; top:32px; box-shadow: inset 0 -6px 10px rgba(0,0,0,0.5); animation:blink 2.5s ease-in-out infinite; opacity:0.85;}
+    .festoon li::after{content:""; position:absolute; left:50%; top:-10px; transform:translateX(-50%); width:10px; height:10px; background:#0a141a; border-radius:3px; box-shadow: 0 2px 0 rgba(0,0,0,0.6);}
+    .festoon li.blue{background: radial-gradient(circle at 50% 30%, #e9fbff, var(--bulb-blue) 30%, #117a9a 75%); box-shadow:0 0 18px 6px rgba(126,219,255,.45)}
+    .festoon li.pink{background: radial-gradient(circle at 50% 30%, #fff2fb, var(--bulb-pink) 30%, #8a2365 75%); box-shadow:0 0 18px 6px rgba(255,157,230,.45)}
+    .festoon li.gold{background: radial-gradient(circle at 50% 30%, #fff8e1, var(--bulb-gold) 30%, #9a6f11 75%); box-shadow:0 0 18px 6px rgba(255,211,110,.45)}
+    .festoon li.lime{background: radial-gradient(circle at 50% 30%, #f3fff5, var(--bulb-lime) 30%, #1f8a4c 75%); box-shadow:0 0 18px 6px rgba(183,255,157,.45)}
+    .festoon li.purple{background: radial-gradient(circle at 50% 30%, #f8f0ff, var(--bulb-purple) 30%, #551a82 75%); box-shadow:0 0 18px 6px rgba(210,164,255,.45)}
+    .festoon li.orange{background: radial-gradient(circle at 50% 30%, #fff5ed, var(--bulb-orange) 30%, #994412 75%); box-shadow:0 0 18px 6px rgba(255,183,122,.45)}
+    .festoon li.aqua{background: radial-gradient(circle at 50% 30%, #ecfffb, var(--bulb-aqua) 30%, #0c7562 75%); box-shadow:0 0 18px 6px rgba(126,255,225,.45)}
+    .festoon li.rose{background: radial-gradient(circle at 50% 30%, #fff1f6, var(--bulb-rose) 30%, #a61a4b 75%); box-shadow:0 0 18px 6px rgba(255,159,191,.45)}
+    @keyframes blink{0%, 20%, 100% {filter:brightness(1)} 10% {filter:brightness(2)} 60% {filter:brightness(1.6)} 80% {filter:brightness(0.7)}}
+
+    /* Second festoon row */
+    .festoon.second{top:16vh; transform: rotate(2deg);}
+    .festoon.second .wire{top:24px}
+
+    /* Fairy curtain lights (random dots) */
+    .fairy{position:fixed; inset:0; pointer-events:none; z-index:3}
+    .fairy span{
+      position:absolute; width:6px; height:6px; border-radius:50%;
+      background: radial-gradient(#fff, transparent 70%);
+      box-shadow: 0 0 12px rgba(255,255,255,.7);
+      animation: fairyBlink 3s ease-in-out infinite;
+      opacity:.85;
+    }
+    @keyframes fairyBlink{0%,100%{transform:scale(1); filter:brightness(1)} 50%{transform:scale(1.4); filter:brightness(1.8)}}
+
+    /* Center stage */
+    .stage{position:relative; z-index:4; width:100%; height:100%; display:grid; place-items:center; padding-top:6vh;}
+
+    /* Glass jar */
+    .jar{position:relative; width:min(60vmin, 440px); aspect-ratio: 3/4; cursor:pointer; transform-style:preserve-3d; transition: transform .3s ease;}
+    .jar:hover{transform: translateY(-4px)}
+    .jar svg{position:absolute; inset:0; width:100%; height:100%}
+    .jar .glow{position:absolute; inset:-6%; border-radius:24px; background: radial-gradient(60% 60% at 50% 30%, rgba(142,232,255,0.20), transparent 70%); filter: blur(24px); animation: jarPulse 4.5s ease-in-out infinite; z-index:-1;}
+    @keyframes jarPulse{0%,100%{opacity:.5}50%{opacity:.8}}
+
+    /* Slip (paper) */
+    .slip{
+      position:absolute; left:50%; bottom:48%;
+      transform: translate(-50%, 0) rotate(-2deg) scale(.95);
+      min-width: 260px; max-width: min(86vw, 520px);
+      background: linear-gradient(#fffdf8, var(--slip) 30%, #fff4e8);
+      border: 1px solid rgba(0,0,0,0.08);
+      color:var(--slip-ink);
+      border-radius:10px;
+      padding:14px 16px;
+      box-shadow: 0 12px 26px rgba(0,0,0,.25), 0 0 0 6px rgba(255,255,255,.06) inset;
+      opacity:0;
+    }
+    .slip .tag{font-size:12px; text-transform:uppercase; letter-spacing:1px; opacity:.7}
+    .slip .text{font-size:17px; line-height:1.45; font-weight:600}
+    .slip.show{animation: popOut 1.15s cubic-bezier(.22,1,.36,1) forwards; opacity:1; pointer-events:auto;}
+    @keyframes popOut{0%{transform:translate(-50%,40%) rotate(6deg) scale(.8); opacity:0}60%{transform:translate(-50%,-20%) rotate(-3deg) scale(1.02); opacity:1}100%{transform:translate(-50%,-40%) rotate(-1deg) scale(1)}}
+
+    /* Caption/ticker */
+    .ticker{
+      position:fixed; bottom:10vh; left:50%; transform:translateX(-50%);
+      background: rgba(10, 18, 25, 0.35);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px; padding:10px 16px;
+      display:flex; align-items:center; gap:12px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      z-index:5;
+    }
+    .ticker .dot{width:10px;height:10px;border-radius:50%;background:radial-gradient(var(--glow),transparent 60%); box-shadow:0 0 20px 6px rgba(124,211,255,.6)}
+    .ticker .label{font-size:12px; text-transform:uppercase; opacity:.7; letter-spacing:1px}
+    .ticker .value{font-weight:700}
+
+    /* Controls */
+    .controls{
+      position:fixed; right:2.2vw; bottom:2.2vh; z-index:6;
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .btn{
+      appearance:none; border:none; padding:10px 14px; border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+      color:#e6faff; font-weight:700; letter-spacing:.3px;
+      border:1px solid rgba(255,255,255,0.22);
+      box-shadow: 0 6px 18px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,0.05);
+      cursor:pointer; transition: transform .15s ease, filter .2s ease;
+      backdrop-filter: blur(6px);
+      position:relative; overflow:hidden;
+    }
+    .btn:hover{transform:translateY(-2px); filter:brightness(1.2)}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{background: linear-gradient(180deg, rgba(109,226,255,0.45), rgba(73,164,196,0.18)); border-color: rgba(124,211,255,0.8)}
+    .btn.pink{background: linear-gradient(180deg, rgba(255,157,230,0.35), rgba(120,35,101,0.18)); border-color: rgba(255,157,230,0.8)}
+    .select{
+      appearance:none; border:none; padding:10px 14px; border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+      color:#e6faff; font-weight:700; letter-spacing:.3px;
+      border:1px solid rgba(255,255,255,0.22);
+      box-shadow: 0 6px 18px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,0.05);
+      backdrop-filter: blur(6px);
+    }
+
+    /* Intro overlay */
+    .intro{position:fixed; inset:0; z-index:7; display:grid; place-items:center; background: radial-gradient(80% 60% at 50% 40%, rgba(7,20,30,0.9), rgba(4,10,21,0.98)); transition: opacity .6s ease, visibility .6s ease;}
+    .intro.hide{opacity:0; visibility:hidden}
+    .intro .card{
+      text-align:center; padding:28px 24px; border-radius:22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      max-width:min(92vw,720px);
+      animation: introPop 1s cubic-bezier(.22,1,.36,1);
+    }
+    .title{
+      font-size: clamp(28px, 5vw, 44px);
+      line-height:1.08; font-weight:900; letter-spacing:.6px;
+      background: linear-gradient(90deg, #fff, #9be6ff 45%, #ffb3ec 55%, #fff);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter: drop-shadow(0 8px 30px rgba(124,211,255,0.3));
+    }
+    .subtitle{opacity:.82; margin-top:10px}
+    .intro p{margin:10px 0}
+    @keyframes introPop{0%{transform:translateY(14px) scale(.96); opacity:0}100%{transform:none; opacity:1}}
+
+    /* Toast */
+    .toast{position:fixed; left:50%; top:14px; transform:translateX(-50%); background:rgba(20,36,44,.7); border:1px solid rgba(255,255,255,.15); padding:8px 14px; border-radius:12px; z-index:8; display:none; backdrop-filter: blur(6px);}
+    .toast.show{display:block; animation:fadeToast 2.6s ease forwards}
+    @keyframes fadeToast{0%{opacity:0; transform:translate(-50%,-6px)}10%{opacity:1; transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0}}
+
+    /* Audio controls (minimal) */
+    .audio-controls{
+      position:fixed; left:2.2vw; bottom:2.2vh; z-index:6; display:flex; gap:8px; align-items:center;
+      background: rgba(10, 18, 25, 0.35);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:16px; padding:8px 12px; backdrop-filter: blur(8px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    .audio-controls input[type="range"]{accent-color: var(--glow)}
+    .audio-controls .upload{font-size:12px; opacity:.8; cursor:pointer}
+    .audio-controls .upload input{display:none}
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce){
+      .bokeh span, .moon, .wave, .jar .glow, .festoon li, .intro .card{animation:none !important}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="moon" aria-hidden="true"></div>
+  <div class="bokeh" aria-hidden="true">
+    <span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span>
+  </div>
+
+  <!-- Festoon lights (two rows for richer decor) -->
+  <div class="festoon" aria-hidden="true">
+    <div class="wire"></div>
+    <ul>
+      <li class="blue"></li><li class="pink"></li><li class="gold"></li><li class="lime"></li>
+      <li class="purple"></li><li class="orange"></li><li class="aqua"></li><li class="rose"></li>
+      <li class="blue"></li><li class="pink"></li><li class="gold"></li><li class="lime"></li>
+      <li class="purple"></li><li class="orange"></li><li class="aqua"></li><li class="rose"></li>
+    </ul>
+  </div>
+  <div class="festoon second" aria-hidden="true">
+    <div class="wire"></div>
+    <ul>
+      <li class="gold"></li><li class="aqua"></li><li class="pink"></li><li class="blue"></li>
+      <li class="rose"></li><li class="lime"></li><li class="purple"></li><li class="orange"></li>
+      <li class="gold"></li><li class="aqua"></li><li class="pink"></li><li class="blue"></li>
+      <li class="rose"></li><li class="lime"></li><li class="purple"></li><li class="orange"></li>
+    </ul>
+  </div>
+
+  <!-- Fairy curtain (auto-populated) -->
+  <div class="fairy" id="fairy" aria-hidden="true"></div>
+
+  <!-- Stage with jar -->
+  <main class="stage">
+    <div class="jar" id="jar" role="button" aria-label="Click the jar to pull a promise" tabindex="0">
+      <div class="glow"></div>
+      <!-- SVG Jar -->
+      <svg viewBox="0 0 300 400" aria-hidden="true">
+        <defs>
+          <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#9be6ff" stop-opacity="0.55"/>
+            <stop offset="50%" stop-color="#c2fbff" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.35"/>
+          </linearGradient>
+          <radialGradient id="shine" cx="50%" cy="20%" r="60%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="softglow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path d="M50,70 h200 q20,0 20,20 v200 q0,60 -80,80 q-40,10 -80,0 q-80,-20 -80,-80 V90 q0,-20 20,-20 z" fill="url(#glass)" stroke="#a7efff" stroke-opacity=".4" filter="url(#softglow)" />
+        <rect x="70" y="40" width="160" height="40" rx="10" fill="url(#glass)" stroke="#a7efff" stroke-opacity=".5"/>
+        <ellipse cx="150" cy="40" rx="90" ry="12" fill="url(#shine)" opacity=".5"/>
+        <g opacity=".35">
+          <circle cx="90" cy="180" r="4" fill="#fff"/>
+          <circle cx="210" cy="150" r="3" fill="#fff"/>
+          <circle cx="140" cy="230" r="2" fill="#fff"/>
+          <circle cx="170" cy="280" r="3" fill="#fff"/>
+        </g>
+      </svg>
+      <!-- Slips injected here -->
+    </div>
+
+    <!-- Ticker -->
+    <div class="ticker" id="ticker" aria-live="polite">
+      <div class="dot"></div>
+      <div class="label">Category</div>
+      <div class="value" id="catLabel">My Promises to You 💌</div>
+      <div class="label" style="margin-left:14px">No.</div>
+      <div class="value" id="count">0</div>
+    </div>
+  </main>
+
+  <!-- Ocean waves -->
+  <div class="ocean" aria-hidden="true">
+    <div class="wave w1">
+      <svg preserveAspectRatio="none" viewBox="0 0 1440 320">
+        <defs>
+          <linearGradient id="wgrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2b7da0"/>
+            <stop offset="100%" stop-color="#0b1822"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,160L60,149.3C120,139,240,117,360,128C480,139,600,181,720,181.3C840,181,960,139,1080,128C1200,117,1320,139,1380,149.3L1440,160L1440,320L0,320Z"></path>
+      </svg>
+    </div>
+    <div class="wave w2">
+      <svg preserveAspectRatio="none" viewBox="0 0 1440 320">
+        <path d="M0,192L60,186.7C120,181,240,171,360,192C480,213,600,267,720,266.7C840,267,960,213,1080,186.7C1200,160,1320,160,1380,160L1440,160L1440,320L0,320Z"></path>
+      </svg>
+    </div>
+    <div class="wave w3">
+      <svg preserveAspectRatio="none" viewBox="0 0 1440 320">
+        <path d="M0,224L60,229.3C120,235,240,245,360,245.3C480,245,600,235,720,224C840,213,960,203,1080,197.3C1200,192,1320,192,1380,186.7L1440,181.3L1440,320L0,320Z"></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <select id="category" class="select" aria-label="Choose category">
+      <option value="tumhare">My Promises to You 💌</option>
+      <option value="usse">Promise me Ayushi 🌸</option>
+    </select>
+    <button class="btn primary" id="nextBtn" title="Pull next promise"><span class="btnLabel">Pull Next ✨</span></button>
+    <button class="btn pink" id="resetBtn" title="Reset counter">Reset</button>
+    <button class="btn" id="lightBtn" title="Toggle festive lights">Lights On/Off</button>
+  </div>
+
+    <!-- Background calm music autoplay (hidden, Base64 embedded) -->
+  <audio id="bgm" autoplay loop preload="auto" hidden>
+    <source src="data:audio/mp3;base64,AAAAGGZ0eXBtcDQyAAAAAG1wNDFtcDQyaXNvbWF2YzEAAAAIZnJlZQAAAFdtZGF0AAAADmZsYWcAAAAAAAAAA..." type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById('bgm');
+    audio.volume = 0.15; // soft volume
+  </script>
+
+  <!-- Intro -->
+  <section class="intro" id="intro">
+    <div class="card">
+      <div class="title">Digital Jar of Promises 🌸</div>
+      \1
+</div>
+      <p style="opacity:.9;margin-top:14px">✨ In this calm world of <strong>moon</strong> and <strong>oceans</strong>, I have written down promises that flow straight from my heart… each one shines like a <strong>star</strong>, meant only for <strong>you</strong> 💖🌙</p>
+      <p style="opacity:.9;margin-top:10px">🌸 And the promises I softly ask from you, <strong>Ayushi</strong> — your replies are so precious to me… whisper them in our small world of <strong>DM</strong> ❤️✨</p>
+      <p style="opacity:.85;margin-top:10px">Tap <strong>Enter</strong>, then click the jar to pull each promise one‑by‑one. Toggle the lights for a festive sparkle. </p>
+      <div style="margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+        <button class="btn primary" id="enter">Enter</button>
+        <button class="btn" id="enterLights">Enter with Lights ✨</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast">Playing music…</div>
+
+  <script>
+    /* ===== STARS CANVAS ===== */
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; createStars(); }
+    window.addEventListener('resize', resize);
+    function rand(n){return Math.random()*n}
+    function createStars(){
+      const count = Math.min(500, Math.floor((canvas.width*canvas.height)/3800));
+      stars = new Array(count).fill(0).map(()=> ({ x: rand(canvas.width), y: rand(canvas.height*0.9), r: Math.random()*1.3 + 0.2, tw: Math.random()*0.8 + 0.2, phase: Math.random()*Math.PI*2 }));
+    }
+    function drawStars(t){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(const s of stars){
+        const a = 0.4 + Math.sin(t/1000*s.tw + s.phase)*0.25;
+        ctx.globalAlpha = a;
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#7cd3ff'; ctx.shadowBlur = 8; ctx.fill();
+      }
+      ctx.globalAlpha = 1; requestAnimationFrame(drawStars);
+    }
+    resize(); requestAnimationFrame(drawStars);
+
+    /* ===== FAIRY LIGHTS (randomised) ===== */
+    const fairy = document.getElementById('fairy');
+    const fairyColors = ['#9be6ff','#ff9de6','#ffd36e','#b7ff9d','#d2a4ff','#ffb77a','#7effe1','#ff9fbf'];
+    const fairyCount = 80;
+    for(let i=0;i<fairyCount;i++){
+      const s=document.createElement('span');
+      const x = Math.random()*100, y = Math.random()*100;
+      s.style.left = x+'vw'; s.style.top = y+'vh';
+      s.style.boxShadow = `0 0 10px ${fairyColors[i%fairyColors.length]}`;
+      s.style.background = `radial-gradient(${fairyColors[i%fairyColors.length]}, transparent 70%)`;
+      s.style.animationDelay = (Math.random()*2.5)+'s';
+      s.style.animationDuration = (2.5 + Math.random()*3)+'s';
+      fairy.appendChild(s);
+    }
+
+    /* ===== PROMISES (with romantic coloured hearts) ===== */
+    const PROMISES = {
+      tumhare: [
+        "I promise to make you a cup of tea (ilaichi wali) whenever you don’t feel okay. ☕💗",
+        "I promise never to scream at you, no matter how bad my mood is. 🤍🫶",
+        "I promise to hug you deeply whenever you are sad. 🤗💜",
+        "I promise to make you laugh on the days you forget to smile. 😄✨💛",
+        "I promise to listen to your silence as much as your words. 🌸💖",
+        "I promise to choose you every single day, in every lifetime. ♾️❤️‍🔥",
+        "I promise to wipe your tears before they even fall. 💧💙",
+        "I promise to never let you sleep without feeling loved. (yes, also in the tenthouse) 🏕️💤💘",
+        "I promise to make you feel like home, always... 🏡💛",
+        "I promise to be your strength when you feel weak. 🛡️💚"
+      ],
+      usse: [
+        "Ayushi, will you stay with me forever? 💫❤️",
+        "Promise me you will never break my heart. 💔🚫🩷",
+        "Promise me you will never disrespect our bond. 🤝💜",
+        "Will you sleep by my side every night, forever? 🌙🛏️💙",
+        "Will you make food for both of us sometimes with your own hands? 🍛👩‍🍳💛",
+        "Will you be with me whenever I take big decisions? 🧭💚",
+        "Will you dance with me even when we grow old? 🕺💃🧡",
+        "Promise me you’ll still hold my hand in public when we’re 70. 👵👴🤍",
+        "Promise me you’ll be my safe place as much as I’ll be yours. 🫶💖"
+      ]
+    };
+
+    let category = 'tumhare';
+    let index = 0;
+
+    const jar = document.getElementById('jar');
+    const countEl = document.getElementById('count');
+    const catLabel = document.getElementById('catLabel');
+    const select = document.getElementById('category');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const lightBtn = document.getElementById('lightBtn');
+
+    function updateTicker(){
+      countEl.textContent = index;
+      catLabel.textContent = (category==='tumhare' ? 'My Promises to You 💌' : 'Promise me Ayushi 🌸');
+    }
+
+    function burst(x,y){
+      const n = 18;
+      for(let i=0;i<n;i++){
+        const p = document.createElement('span');
+        p.style.position='fixed';
+        p.style.left = x+'px'; p.style.top = y+'px';
+        p.style.width='6px'; p.style.height='6px';
+        p.style.borderRadius='50%';
+        p.style.background='radial-gradient(#fff, rgba(124,211,255,0.3))';
+        p.style.boxShadow='0 0 14px rgba(124,211,255,0.8)';
+        p.style.pointerEvents='none';
+        p.style.zIndex=7;
+        document.body.appendChild(p);
+        const ang = (Math.PI*2/n)*i + Math.random()*0.3;
+        const dist = 80+Math.random()*60;
+        p.animate([{transform:`translate(0,0) scale(1)`, opacity:1},{transform:`translate(${Math.cos(ang)*dist}px, ${Math.sin(ang)*dist}px) scale(0)`, opacity:0}], {duration:900, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>p.remove();
+      }
+    }
+
+    function showNext(){
+  const list = PROMISES[category];
+  if(!list || list.length===0) return;
+  const text = list[index % list.length];
+  index++;
+  updateTicker();
+
+  // Remove any existing slip before showing the next
+  const oldSlip = jar.querySelector('.slip');
+  if(oldSlip) oldSlip.remove();
+
+  // Create the new slip (single visible at a time)
+  const slip = document.createElement('div');
+  slip.className = 'slip';
+  slip.style.zIndex = String(100 + index);
+  var tag = (category==='tumhare' ? 'My Promise' : 'Promise me, Ayushi');
+  slip.innerHTML = '<div class="tag">' + tag + '</div><div class="text">' + text + '</div>';
+  jar.appendChild(slip);
+  requestAnimationFrame(function(){ slip.classList.add('show'); });
+
+  // Particle burst near the jar mouth
+  const rect = jar.getBoundingClientRect();
+  burst(rect.left + rect.width/2, rect.top + rect.height*0.4);
+}
+
+    // Jar interactions: NO RESTRICTION on clicking next
+    jar.addEventListener('click', showNext);
+    jar.addEventListener('keypress', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); showNext(); }});
+    nextBtn.addEventListener('click', showNext);
+
+    select.addEventListener('change', (e)=>{
+      category = e.target.value;
+      index = 0;
+      updateTicker();
+      jar.setAttribute('aria-label', 'Click the jar to pull a promise from ' + (category==='tumhare' ? 'My Promises to You' : 'Promise me Ayushi'));
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      index = 0; updateTicker();
+      jar.querySelectorAll('.slip').forEach(s => s.remove());
+    });
+
+    lightBtn.addEventListener('click', ()=>{ document.body.classList.toggle('festival'); });
+
+    updateTicker();
+
+    
+    /* ===== INTRO ===== */
+    const intro = document.getElementById('intro');
+    const enter = document.getElementById('enter');
+    const enterLights = document.getElementById('enterLights');
+    function startExperience(withLights=false){
+      if(withLights) document.body.classList.add('festival');
+      intro.classList.add('hide');
+      setTimeout(()=> intro.remove(), 700);
+      tryPlay(false); // attempt autoplay after first user gesture
+      // removed auto welcome slip
+    }
+    enter.addEventListener('click', ()=> startExperience(false));
+    enterLights.addEventListener('click', ()=> startExperience(true));
+  </script>
+</body>
+</html>
